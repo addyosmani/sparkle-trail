@@ -1,0 +1,252 @@
+<link rel="import" href="../polymer/polymer.html">
+
+<!--
+Element providing a sparkle light trail. Useful as a loading indicator.
+
+##### Example
+
+    <sparkle-trail></sparkle-trail>
+
+    <sparkle-trail radius="50" speed="15" hue="800"></sparkle-trail>
+
+    <sparkle-trail radius="70" hue="500" thickness="10"></sparkle-trail>
+
+    <sparkle-trail radius="80" hue="1400" speed="5" thickness="15" blur="5" rotation="5" particleMax="500"></sparkle-trail>
+
+@element sparkle-trail
+@blurb Element providing a sparkle light trail. Useful as a loading indicator.
+@status alpha
+@url http://addyosmani.github.io/sparkle-trail
+-->
+<polymer-element name="sparkle-trail" attributes="height width speed radius hue thickness blur rotation">
+
+  <template>
+
+    <link href="sparkle-trail.css" rel="stylesheet" />
+
+    <canvas class="c"></canvas>
+
+  </template>
+
+  <script>
+    Polymer({
+      /**
+       * The `height` attribute defines the width of the sparkle canvas
+       * 
+       * @attribute height
+       * @type integer
+       */
+      height: 300,
+      /**
+       * The `width` attribute defines the height of the sparkle canvas
+       * 
+       * @attribute width
+       * @type integer
+       */
+      width: 400,
+      /**
+       * The `speed` attribute defines the animation speed of the trail
+       * 
+       * @attribute speed
+       * @type integer
+       */
+      speed: 2,
+      /**
+       * The `radius` attribute defines the radius of the sparkle
+       * 
+       * @attribute radius
+       * @type integer
+       */
+      radius: 90,
+      /**
+       * The `hue` attribute defines the hue used in the trail
+       * 
+       * @attribute hue
+       * @type integer
+       */
+      hue: 220,
+      /**
+       * The `thickness` attribute defines the thickness of the trail
+       * 
+       * @attribute thickness
+       * @type integer
+       */
+      thickness: 18,
+      /**
+       * The `blue` attribute defines the blur radius of the trail
+       * 
+       * @attribute blur
+       * @type integer
+       */
+      blur: 25,
+      /**
+       * The `rotation` attribute defines the thickness of the sparkle
+       * 
+       * @attribute rotation
+       * @type integer
+       */
+      rotation: 0,
+      /**
+       * The `particleMax` attribute defines the maximum number of particles
+       * 
+       * @attribute particleMax
+       * @type integer
+       */
+      particleMax: 100,
+      ctx: null,
+      circle: {
+        angleStart: 270,
+        angleEnd: 90,
+      },
+      particles: [],
+      attached: function(){
+        this.c = this.shadowRoot.querySelector('.c');
+        this.ctx = this.c.getContext('2d');
+        this.cw = this.c.width = this.width;
+        this.ch = this.c.height = this.height;
+        this.circle.x = (this.cw / 2) + 5;
+        this.circle.y = (this.ch / 2) + 22;
+
+        /* Set Constant Properties */
+        this.ctx.shadowBlur = this.blur;
+        this.ctx.shadowColor = 'hsla('+this.hue+', 80%, 60%, 1)';
+        this.ctx.lineCap = 'round';
+          
+        this.gradient1 = this.ctx.createLinearGradient(0, -this.radius, 0, this.radius);
+        this.gradient1.addColorStop(0, 'hsla('+this.hue+', 60%, 50%, .25)');
+        this.gradient1.addColorStop(1, 'hsla('+this.hue+', 60%, 50%, 0)');
+          
+        this.gradient2 = this.ctx.createLinearGradient(0, -this.radius, 0, this.radius);
+        this.gradient2.addColorStop(0, 'hsla('+this.hue+', 100%, 50%, 0)');
+        this.gradient2.addColorStop(.1, 'hsla('+this.hue+', 100%, 100%, .7)');
+        this.gradient2.addColorStop(1, 'hsla('+this.hue+', 100%, 50%, 0)');
+
+        /* Loop It, Loop It Good */
+        setInterval(this.loops.bind(this), 16);
+        
+      },
+      rand: function(a,b){
+        return ~~((Math.random()*(b-a+1))+a);
+      },
+      dToR: function(degrees){
+          return degrees * (Math.PI / 180);
+      },
+
+      updateCircle: function(){
+        if(this.rotation < 360){
+          this.rotation += this.speed;
+        } else {
+          this.rotation = 0; 
+        }
+      },
+      renderCircle: function(){
+        this.ctx.save();
+        this.ctx.translate(this.circle.x, this.circle.y);
+        this.ctx.rotate(this.dToR(this.rotation));
+        this.ctx.beginPath();
+        this.ctx.arc(0, 0, this.radius, this.dToR(this.circle.angleStart), this.dToR(this.circle.angleEnd), true);
+        this.ctx.lineWidth = this.thickness;    
+        this.ctx.strokeStyle = this.gradient1;
+        this.ctx.stroke();
+        this.ctx.restore();
+      },
+      renderCircleBorder: function(){
+        this.ctx.save();
+        this.ctx.translate(this.circle.x, this.circle.y);
+        this.ctx.rotate(this.dToR(this.rotation));
+        this.ctx.beginPath();
+        this.ctx.arc(0, 0, this.radius + (this.thickness/2), this.dToR(this.circle.angleStart), this.dToR(this.circle.angleEnd), true);
+        this.ctx.lineWidth = 2;  
+        this.ctx.strokeStyle = this.gradient2;
+        this.ctx.stroke();
+        this.ctx.restore();
+      },
+      renderCircleFlare: function(){
+        this.ctx.save();
+        this.ctx.translate(this.circle.x, this.circle.y);
+        this.ctx.rotate(this.dToR(this.rotation+185));
+        this.ctx.scale(1,1);
+        this.ctx.beginPath();
+        this.ctx.arc(0, this.radius, 30, 0, Math.PI *2, false);
+        this.ctx.closePath();
+        this.gradient3 = this.ctx.createRadialGradient(0, this.radius, 0, 0, this.radius, 30);      
+        this.gradient3.addColorStop(0, 'hsla(330, 50%, 50%, .35)');
+        this.gradient3.addColorStop(1, 'hsla(330, 50%, 50%, 0)');
+        this.ctx.fillStyle = this.gradient3;
+        this.ctx.fill();     
+        this.ctx.restore();
+      },
+      renderCircleFlare2: function(){
+        this.ctx.save();
+        this.ctx.translate(this.circle.x, this.circle.y);
+        this.ctx.rotate(this.dToR(this.rotation+165));
+        this.ctx.scale(1.5,1);
+        this.ctx.beginPath();
+        this.ctx.arc(0, this.circle.radius, 25, 0, Math.PI *2, false);
+        this.ctx.closePath();
+        this.gradient4 = this.ctx.createRadialGradient(0, this.radius, 0, 0, this.radius, 25);
+        this.gradient4.addColorStop(0, 'hsla(30, 100%, 50%, .2)');
+        this.gradient4.addColorStop(1, 'hsla(30, 100%, 50%, 0)');
+        this.ctx.fillStyle = this.gradient4;
+        this.ctx.fill();     
+        this.ctx.restore();
+      },
+      createParticles: function(){
+        if(this.particles.length < this.particleMax){
+          this.particles.push({
+            x: (this.circle.x + this.radius * Math.cos(this.dToR(this.rotation-85))) + (this.rand(0, this.thickness*2) - this.thickness),
+            y: (this.circle.y + this.radius * Math.sin(this.dToR(this.rotation-85))) + (this.rand(0, this.thickness*2) - this.thickness),
+            vx: (this.rand(0, 100)-50)/1000,
+            vy: (this.rand(0, 100)-50)/1000,
+            radius: this.rand(1, 6)/2,
+            alpha: this.rand(10, 20)/100
+          });
+        }
+      },
+      updateParticles: function(){
+        var i = this.particles.length;
+        while(i--){
+          var p = this.particles[i];
+          p.vx += (this.rand(0, 100)-50)/750;
+          p.vy += (this.rand(0, 100)-50)/750;
+          p.x += p.vx;
+          p.y += p.vy;
+          p.alpha -= .01;
+          
+          if(p.alpha < .02){
+            this.particles.splice(i, 1)
+          }
+        }
+      },
+      renderParticles: function(){
+        var i = this.particles.length;
+        while(i--){
+          var p = this.particles[i];
+          this.ctx.beginPath();
+          this.ctx.fillRect(p.x, p.y, p.radius, p.radius);
+          this.ctx.closePath();
+          this.ctx.fillStyle = 'hsla(0, 0%, 100%, '+p.alpha+')';
+        }
+      },
+      loops: function(){
+        this.clear();
+        this.updateCircle();
+        this.renderCircle();
+        this.renderCircleBorder();
+        this.renderCircleFlare();
+        this.renderCircleFlare2();
+        this.createParticles();
+        this.updateParticles();
+        this.renderParticles();
+      },
+      clear: function(){
+        this.ctx.globalCompositeOperation = 'destination-out';
+        this.ctx.fillStyle = 'rgba(0, 0, 0, .1)';
+        this.ctx.fillRect(0, 0, this.cw, this.ch);
+        this.ctx.globalCompositeOperation = 'lighter';   
+      }
+    });
+
+  </script>
+
+</polymer-element>

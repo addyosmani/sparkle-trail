@@ -1,0 +1,15 @@
+﻿:host {
+  display: block;
+}
+
+img {
+  display: block;
+  float: left; 
+  margin: 0 1px 0 0;
+}
+
+canvas {
+  background: #131c35;/* linear-gradient(#192853, #131c35);*/
+  display: block;
+  float: left;
+}
