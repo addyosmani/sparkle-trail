@@ -1,0 +1,18 @@
+{
+  "name": "sparkle-trail",
+  "private": true,
+  "dependencies": {
+    "polymer": "Polymer/polymer#master"
+  },
+  "homepage": "https://github.com/addyosmani/sparkle-trail",
+  "_release": "1f05fc2908",
+  "_resolution": {
+    "type": "branch",
+    "branch": "master",
+    "commit": "1f05fc2908c6612f8ca4c9cddcdfa5e1b4dfc326"
+  },
+  "_source": "git://github.com/addyosmani/sparkle-trail.git",
+  "_target": "master",
+  "_originalSource": "addyosmani/sparkle-trail",
+  "_direct": true
+}
