@@ -1,22 +1,28 @@
 <link rel="import" href="../polymer/polymer.html">
 
 <!--
-Element providing a sparkle light trail. Useful as a loading indicator.
+Element providing a sparkle light trail. Useful as a pre-loader. This is a Polymer element based on a [Dribbble](https://dribbble.com/shots/674715-Sparkle-Light-Trail) by Ramiro Galan and this [Codepen](http://codepen.io/jackrugile/pen/Gving) by Jack Rugile.
 
-##### Example
+##### Examples
 
     <sparkle-trail></sparkle-trail>
 
     <sparkle-trail radius="50" speed="15" hue="800"></sparkle-trail>
 
+    <sparkle-trail radius="40" hue="600" speed="30" thickness="30" blur="5" rotation="5"></sparkle-trail>
+
     <sparkle-trail radius="70" hue="500" thickness="10"></sparkle-trail>
 
     <sparkle-trail radius="80" hue="1400" speed="5" thickness="15" blur="5" rotation="5" particleMax="500"></sparkle-trail>
 
+##### Preview
+
+![](http://i.imgur.com/ViPfE2B.gif)
+
 @element sparkle-trail
 @blurb Element providing a sparkle light trail. Useful as a loading indicator.
 @status alpha
-@url http://addyosmani.github.io/sparkle-trail
+@homepage http://github.com/addyosmani/sparkle-trail
 -->
 <polymer-element name="sparkle-trail" attributes="height width speed radius hue thickness blur rotation">
 
@@ -73,7 +79,7 @@ Element providing a sparkle light trail. Useful as a loading indicator.
        */
       thickness: 18,
       /**
-       * The `blue` attribute defines the blur radius of the trail
+       * The `blur` attribute defines the blur radius of the trail
        * 
        * @attribute blur
        * @type integer
