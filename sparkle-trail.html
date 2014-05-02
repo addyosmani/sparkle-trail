@@ -24,7 +24,7 @@ Element providing a sparkle light trail. Useful as a loading indicator.
 
     <link href="sparkle-trail.css" rel="stylesheet" />
 
-    <canvas class="c"></canvas>
+    <canvas class="sparkle"></canvas>
 
   </template>
 
@@ -100,14 +100,13 @@ Element providing a sparkle light trail. Useful as a loading indicator.
       },
       particles: [],
       attached: function(){
-        this.c = this.shadowRoot.querySelector('.c');
+        this.c = this.shadowRoot.querySelector('.sparkle');
         this.ctx = this.c.getContext('2d');
         this.cw = this.c.width = this.width;
         this.ch = this.c.height = this.height;
         this.circle.x = (this.cw / 2) + 5;
         this.circle.y = (this.ch / 2) + 22;
 
-        /* Set Constant Properties */
         this.ctx.shadowBlur = this.blur;
         this.ctx.shadowColor = 'hsla('+this.hue+', 80%, 60%, 1)';
         this.ctx.lineCap = 'round';
@@ -120,8 +119,6 @@ Element providing a sparkle light trail. Useful as a loading indicator.
         this.gradient2.addColorStop(0, 'hsla('+this.hue+', 100%, 50%, 0)');
         this.gradient2.addColorStop(.1, 'hsla('+this.hue+', 100%, 100%, .7)');
         this.gradient2.addColorStop(1, 'hsla('+this.hue+', 100%, 50%, 0)');
-
-        /* Loop It, Loop It Good */
         setInterval(this.loops.bind(this), 16);
         
       },
